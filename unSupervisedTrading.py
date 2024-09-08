@@ -39,4 +39,10 @@ with open('df.pkl', 'rb') as f:
 df.index.names = ['date','ticker']
 df.columns = df.columns.str.lower()
 
+
+df['garman_klass_volatility'] = ((np.log(df['high'])-np.log(df['low']))**2)/2 - (2*np.log(2)-1)*((np.log(df['adj close'])) - np.log(df['open']))**2
+
+# group by ticker
+df['rsi'] = df.groupby(level=1)['adj close'].transform(lambda x: pandas_ta.rsi(close=x, length=20))
+df.xs('AAPL',level=1)['rsi'].plot()
 print(df)
